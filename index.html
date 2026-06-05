@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日報ボタン メーカー 🐾</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F8F9;
+    --card:#FFFFFF;
+    --accent:#7BA8B5;
+    --accent-soft:#E5F0F2;
+    --accent-deep:#5B8C99;
+    --ink:#3E4D54;
+    --ink-soft:#7A8A91;
+    --line:#E3EAEC;
+    --positive:#8FB89A;
+    --warn-bg:#FBF3E7;
+    --warn-ink:#9A7B45;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Zen Maru Gothic',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.7;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:680px;margin:0 auto;}
+  header{text-align:center;margin-bottom:28px;}
+  header .paw{font-size:34px;}
+  header h1{
+    font-size:24px;font-weight:700;margin:6px 0 4px;
+    color:var(--accent-deep);letter-spacing:.02em;
+  }
+  header p{margin:0;color:var(--ink-soft);font-size:14px;}
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:24px;margin-bottom:20px;
+    box-shadow:0 2px 10px rgba(123,168,181,.06);
+  }
+  .step-badge{
+    display:inline-block;background:var(--accent-soft);color:var(--accent-deep);
+    font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px;margin-bottom:14px;
+  }
+  label{display:block;font-weight:500;font-size:14px;margin:16px 0 6px;}
+  label .req{color:#C98A8A;font-size:12px;margin-left:4px;}
+  label .opt{color:var(--ink-soft);font-size:12px;margin-left:4px;}
+  input[type=text],textarea{
+    width:100%;border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px;font-family:inherit;font-size:14px;color:var(--ink);
+    background:#FCFDFD;transition:border-color .15s,box-shadow .15s;resize:vertical;
+  }
+  input[type=text]:focus,textarea:focus{
+    outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea{min-height:96px;line-height:1.6;}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:5px;}
+  .make-btn{
+    width:100%;border:none;border-radius:12px;padding:15px;
+    background:var(--accent);color:#fff;font-family:inherit;
+    font-size:16px;font-weight:700;cursor:pointer;margin-top:24px;
+    transition:background .15s,transform .05s;
+  }
+  .make-btn:hover{background:var(--accent-deep);}
+  .make-btn:active{transform:scale(.99);}
+  /* 結果エリア */
+  #result{display:none;}
+  .result-card{border:1px solid var(--accent);background:#FBFDFD;}
+  .dragbtn{
+    display:inline-block;background:var(--accent-soft);color:var(--accent-deep);
+    border:1.5px dashed var(--accent);border-radius:10px;
+    padding:12px 22px;font-weight:700;font-size:15px;text-decoration:none;
+    margin:6px 0;cursor:grab;
+  }
+  .copy-btn{
+    border:1px solid var(--accent);background:#fff;color:var(--accent-deep);
+    border-radius:9px;padding:9px 16px;font-family:inherit;font-size:13px;
+    font-weight:500;cursor:pointer;margin-top:8px;
+  }
+  .copy-btn:hover{background:var(--accent-soft);}
+  ol.guide{margin:10px 0 0;padding-left:20px;}
+  ol.guide li{margin-bottom:8px;font-size:14px;}
+  .note{
+    background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;
+    padding:12px 14px;font-size:13px;margin-top:14px;
+  }
+  .divider{height:1px;background:var(--line);margin:20px 0;}
+  code{background:var(--accent-soft);padding:1px 6px;border-radius:5px;font-size:13px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="paw">🐾</div>
+    <h1>日報ボタン メーカー</h1>
+    <p>自分の名前と作業内容を入れて、自分専用の入力ボタンを作ろう</p>
+  </header>
+
+  <!-- 入力フォーム -->
+  <div class="card">
+    <span class="step-badge">STEP 1 ｜ 自分の情報を入力</span>
+
+    <label>フルネーム<span class="req">必須</span></label>
+    <input type="text" id="fullname" placeholder="例）山田太郎">
+    <div class="hint">姓名の間にスペースを入れないでください。</div>
+
+    <label>ニックネーム<span class="req">必須</span></label>
+    <input type="text" id="nickname" placeholder="例）やまちゃん">
+
+    <label>本日の作業内容<span class="opt">任意・毎回同じでOK</span></label>
+    <textarea id="today" placeholder="・朝礼：45分／45分&#10;・MTG：3時間／3時間&#10;合計：8時間15分"></textarea>
+
+    <label>翌日の作業内容<span class="opt">任意</span></label>
+    <textarea id="tomorrow" placeholder="・朝礼：45分（予定）&#10;・MTG：2時間（予定）&#10;合計：8時間15分"></textarea>
+
+    <label>今日は勝ちましたか？<span class="opt">任意</span></label>
+    <input type="text" id="win" placeholder="例）はい">
+
+    <div class="divider"></div>
+
+    <label>次回の朝礼で話したい議題<span class="opt">任意</span></label>
+    <textarea id="topic" placeholder="（空でOK）"></textarea>
+
+    <label>業務効率を上げるために取り組んでいること<span class="opt">任意</span></label>
+    <textarea id="skill" placeholder="（空でOK）"></textarea>
+
+    <label>個人的なこと<span class="opt">任意</span></label>
+    <textarea id="personal" placeholder="（空でOK）"></textarea>
+
+    <button class="make-btn" onclick="makeButton()">🐾 自分専用ボタンを作る</button>
+    <div class="note">💾 入力した内容はこのブラウザに保存されます。次に開いたときも残っているので、作り直しもラクです。</div>
+  </div>
+
+  <!-- 結果 -->
+  <div class="card result-card" id="result">
+    <span class="step-badge">STEP 2 ｜ ボタンをお気に入りバーに登録</span>
+    <p style="font-size:14px;margin:6px 0 14px;">下のボタンを、ブラウザ上部の<b>お気に入りバーへドラッグ＆ドロップ</b>してください。これで登録完了です。</p>
+    <a class="dragbtn" id="dragLink" href="#">📋 日報入力（自分用）</a>
+    <div>
+      <button class="copy-btn" onclick="copyCode()">うまくドラッグできない人はこちら（コードをコピー）</button>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-size:14px;font-weight:700;margin:0 0 6px;">📌 コピーした場合の登録手順</p>
+    <ol class="guide">
+      <li>お気に入りバーで<b>右クリック → 「ページを追加」</b></li>
+      <li>名前は「日報入力」など好きに、URL欄に<b>コピーしたコードを貼り付け</b>て保存</li>
+    </ol>
+
+    <div class="divider"></div>
+    <span class="step-badge">STEP 3 ｜ 毎日の使い方</span>
+    <ol class="guide">
+      <li>日報の入力ページ（新しいアイテム）を開く</li>
+      <li>登録した<b>「日報入力」ボタンをクリック</b></li>
+      <li><b>「所属セクション」だけ手動で選んで</b>、提出！</li>
+    </ol>
+    <div class="note">⚠️ 日付は最初から今日の日付が入っています。所属セクションだけは自動化できないので、各自で選んでください🐾</div>
+  </div>
+</div>
+
+<script>
+  var FIELDS=['fullname','nickname','today','tomorrow','win','topic','skill','personal'];
+  // 入力欄 → 日報フォーム側のラベル（aria-labelの一部）対応
+  var LABELMAP={
+    fullname:'フルネーム',
+    nickname:'ニックネーム',
+    today:'本日の作業内容',
+    tomorrow:'翌日の作業内容',
+    win:'今日は勝ちましたか',
+    topic:'次回の朝礼で話したい議題',
+    skill:'業務効率を上げるために',
+    personal:'個人的なこと'
+  };
+  var STORE='nippouButtonMaker';
+  var lastCode='';
+
+  // 保存値の復元
+  window.addEventListener('load',function(){
+    try{
+      var saved=JSON.parse(localStorage.getItem(STORE)||'{}');
+      FIELDS.forEach(function(f){if(saved[f]!=null)document.getElementById(f).value=saved[f];});
+    }catch(e){}
+  });
+
+  function save(){
+    var obj={};
+    FIELDS.forEach(function(f){obj[f]=document.getElementById(f).value;});
+    try{localStorage.setItem(STORE,JSON.stringify(obj));}catch(e){}
+  }
+
+  function makeButton(){
+    var fullname=document.getElementById('fullname').value.trim();
+    var nickname=document.getElementById('nickname').value.trim();
+    if(!fullname||!nickname){
+      alert('フルネームとニックネームは必須です🐾');
+      return;
+    }
+    save();
+
+    // 入力がある欄だけ jobs に追加
+    var jobs=[];
+    FIELDS.forEach(function(f){
+      var v=document.getElementById(f).value;
+      if(v&&v.trim()!==''){jobs.push([LABELMAP[f],v]);}
+    });
+
+    var code='javascript:(function(){'+
+      'function setVal(el,v){if(!el)return;var proto=el.tagName===\'TEXTAREA\'?window.HTMLTextAreaElement.prototype:window.HTMLInputElement.prototype;var setter=Object.getOwnPropertyDescriptor(proto,\'value\').set;setter.call(el,v);el.dispatchEvent(new Event(\'input\',{bubbles:true}));el.dispatchEvent(new Event(\'change\',{bubbles:true}));}'+
+      'function byLabel(s){return document.querySelector(\'input[aria-label*="\'+s+\'"],textarea[aria-label*="\'+s+\'"]\');}'+
+      'var jobs='+JSON.stringify(jobs)+';'+
+      'var ok=[],ng=[];jobs.forEach(function(j){var el=byLabel(j[0]);if(el){setVal(el,j[1]);ok.push(j[0]);}else{ng.push(j[0]);}});'+
+      'alert(\'入力できた → \'+(ok.length?ok.join(\'、\'):\'なし\')+(ng.length?\'\\n見つからなかった → \'+ng.join(\'、\'):\'\'));'+
+      '})();';
+
+    lastCode=code;
+    var link=document.getElementById('dragLink');
+    link.href=code;
+    link.textContent='📋 日報入力（'+nickname+'）';
+    document.getElementById('result').style.display='block';
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  }
+
+  function copyCode(){
+    if(!lastCode){alert('先にボタンを作ってください🐾');return;}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(lastCode).then(function(){
+        alert('コードをコピーしました！お気に入りのURL欄に貼り付けてね🐾');
+      }).catch(function(){window.prompt('これをコピーしてね：',lastCode);});
+    }else{
+      window.prompt('これをコピーしてね：',lastCode);
+    }
+  }
+</script>
+</body>
+</html>
