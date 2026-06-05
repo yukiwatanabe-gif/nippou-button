@@ -213,7 +213,7 @@
 
     var code='javascript:(function(){'+
       'function setVal(el,v){if(!el)return;var proto=el.tagName===\'TEXTAREA\'?window.HTMLTextAreaElement.prototype:window.HTMLInputElement.prototype;var setter=Object.getOwnPropertyDescriptor(proto,\'value\').set;el.focus();setter.call(el,v);el.dispatchEvent(new Event(\'input\',{bubbles:true}));el.dispatchEvent(new Event(\'change\',{bubbles:true}));el.blur();}'+
-      'function setAll(s,v){var els=document.querySelectorAll(\'input[aria-label*="\'+s+\'"],textarea[aria-label*="\'+s+\'"]\');var n=0;els.forEach(function(el){if(el.offsetParent!==null){setVal(el,v);n++;}});return n;}'+
+      'function setAll(s,v){var els=document.querySelectorAll(\'input[aria-label*="\'+s+\'"],textarea[aria-label*="\'+s+\'"]\');var vis=[],all=[];els.forEach(function(el){all.push(el);if(el.offsetParent!==null)vis.push(el);});var tg=vis.length?vis:all;tg.forEach(function(el){setVal(el,v);});return tg.length;}'+
       'var t=new Date();var d=t.getFullYear()+\'/\'+((\'0\'+(t.getMonth()+1)).slice(-2))+\'/\'+((\'0\'+t.getDate()).slice(-2));'+
       'var jobs='+JSON.stringify(jobs)+';'+
       'var ok=[],ng=[];jobs.forEach(function(j){var n=setAll(j[0],j[1]);if(n>0){ok.push(j[0]);}else{ng.push(j[0]);}});'+
